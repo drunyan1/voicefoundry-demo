@@ -40,13 +40,13 @@ functions:
 
 resources:
   Resources:
-    VoicefoundryDemoDynamoDB: #just a resource name
+    VoicefoundryDemoDynamoDB:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: voicefoundry-demo-table
         AttributeDefinitions:
           - AttributeName: uuid
-            AttributeType: S # (S/N/B(binary))
+            AttributeType: S
         KeySchema:
           - AttributeName: uuid
             KeyType: HASH
