@@ -1,0 +1,65 @@
+service: voicefoundry-demo
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+      Resource: arn:aws:s3:::*
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: arn:aws:dynamodb:*:*:*
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: '*'
+
+functions:
+  voicefoundry-demo-upload:
+    handler: handler.uploadFile
+    events:
+      - http:
+          path: upload
+          method: post
+  voicefoundry-demo-parse:
+    handler: handler.parseFile
+    events:
+      - s3: 
+          bucket: voicefoundry-demo-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .txt
+
+resources:
+  Resources:
+    VoicefoundryDemoDynamoDB: #just a resource name
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: voicefoundry-demo-table
+        AttributeDefinitions:
+          - AttributeName: uuid
+            AttributeType: S # (S/N/B(binary))
+        KeySchema:
+          - AttributeName: uuid
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+plugins:
+  - voicefoundry-demo-plugin
+
+custom:
+  voicefoundrydemo:
+    service: voicefoundry-demo
+    stage: dev
+    lambda: voicefoundry-demo-upload
+    file: initial.txt
