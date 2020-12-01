@@ -24,13 +24,13 @@ provider:
 
 functions:
   voicefoundry-demo-upload:
-    handler: handler.uploadFile
+    handler: api/voicefoundry-demo.uploadFile
     events:
       - http:
           path: upload
           method: post
   voicefoundry-demo-parse:
-    handler: handler.parseFile
+    handler: api/voicefoundry-demo.parseFile
     events:
       - s3: 
           bucket: voicefoundry-demo-bucket

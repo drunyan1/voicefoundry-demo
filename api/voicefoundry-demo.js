@@ -26,11 +26,11 @@ module.exports.uploadFile = async (event) => {
 	// Make sure the file is a txt file
 	else if (!uploadedFile.fileName.toLowerCase().endsWith('.txt')) {
 		statusCode = 400;
-		message = 'File is not a txt file';
+		message = 'File is not a text file';
 	}
 
-	// Make sure the file is not too large
-	else if (uploadedFile.fileContent.length > 100) {
+	// Make sure the file is not too large - I chose 350 KB to keep it from getting too big for DynamoDB
+	else if (uploadedFile.fileContent.length > 358400) {
 		statusCode = 400;
 		message = 'File must be smaller than 350 KB';
 	}
